@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sodiq-app
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: sodiq-app
+  template:
+    metadata:
+      labels:
+        app: sodiq-app
+    spec:
+      containers:
+        - name: sodiq-app
+          image: student71/sodiq:latest
+          ports:
+            - containerPort: 3000
