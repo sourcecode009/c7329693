@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sodiq-genai-app
+  namespace: prod
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: sodiq-genai-app
+      tier: ml-ai
+  template:
+    metadata:
+      labels:
+        app: sodiq-genai-app
+        tier: ml-ai
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: environment
+                operator: In
+                values:
+                - prod
+      containers:
+      - name: sodiq-genai-app
+        image: student71/sodiq:latest
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        ports:
+        - containerPort: 3000 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sodiq-genai-service
+  namespace: prod
+spec:
+  selector:
+    app: sodiq-genai-app
+    tier: ml-ai
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
